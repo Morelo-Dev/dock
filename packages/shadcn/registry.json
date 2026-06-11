@@ -1,0 +1,47 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "dock-buttons",
+  "homepage": "https://dock-buttons.dev",
+  "items": [
+    {
+      "name": "button-dock",
+      "type": "registry:component",
+      "title": "ButtonDock",
+      "description": "A draggable, dockable button group. Users can freely reposition it on screen, pin it to the viewport (fixed) or let it scroll with the page (floating). Double-tap the handle to return to the original position.",
+      "files": [
+        {
+          "path": "components/button-dock.tsx",
+          "type": "registry:component",
+          "target": "components/ui/button-dock.tsx"
+        },
+        {
+          "path": "hooks/use-dock-state.ts",
+          "type": "registry:hook",
+          "target": "hooks/use-dock-state.ts"
+        },
+        {
+          "path": "hooks/use-drag.ts",
+          "type": "registry:hook",
+          "target": "hooks/use-drag.ts"
+        }
+      ],
+      "dependencies": ["react", "react-dom"],
+      "registryDependencies": ["button"],
+      "tags": ["button", "drag", "floating", "dock", "toolbar"]
+    },
+    {
+      "name": "button-dock-demo",
+      "type": "registry:example",
+      "title": "ButtonDock Demo",
+      "description": "Basic usage of ButtonDock with primary, secondary and danger buttons.",
+      "files": [
+        {
+          "path": "examples/button-dock-demo.tsx",
+          "type": "registry:example",
+          "target": "components/examples/button-dock-demo.tsx"
+        }
+      ],
+      "registryDependencies": ["button-dock"]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+/* ── Placeholder (siempre ocupa el espacio en el flujo del DOM) ─────── */
+.placeholder {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--dock-radius-md);
+  border: 2px dashed var(--dock-color-neutral-200);
+  background: var(--dock-color-neutral-50);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dock-transition-base);
+}
+
+.placeholder.visible {
+  opacity: 1;
+}
+
+/* ── Dock root ───────────────────────────────────────────────────────── */
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dock-space-2);
+  padding: var(--dock-space-2) var(--dock-space-3);
+  background: var(--dock-color-neutral-0);
+  border: 1px solid var(--dock-color-neutral-200);
+  border-radius: var(--dock-radius-lg);
+  box-shadow: var(--dock-shadow-md);
+  font-family: var(--dock-font-family);
+  user-select: none;
+  /* Prevent layout shifts when transitioning to portal */
+  width: max-content;
+}
+
+/* Despegado del DOM (portal en body) */
+.root.detached {
+  box-shadow: var(--dock-shadow-float);
+}
+
+/* Arrastrando — cursor y sombra de elevación */
+.root.dragging {
+  box-shadow: 0 24px 32px -8px rgb(0 0 0 / 0.2), 0 8px 12px -4px rgb(0 0 0 / 0.12);
+  cursor: grabbing !important;
+  transition: box-shadow var(--dock-transition-fast);
+}
+
+/* ── Handle ─────────────────────────────────────────────────────────── */
+.handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--dock-radius-sm);
+  color: var(--dock-color-neutral-400);
+  cursor: grab;
+  flex-shrink: 0;
+  transition: background-color var(--dock-transition-fast), color var(--dock-transition-fast);
+  touch-action: none;
+}
+
+.handle:hover {
+  background-color: var(--dock-color-neutral-100);
+  color: var(--dock-color-neutral-700);
+}
+
+.dragging .handle {
+  cursor: grabbing;
+  color: var(--dock-color-primary-600);
+}
+
+/* ── Divider ────────────────────────────────────────────────────────── */
+.divider {
+  width: 1px;
+  height: 1.25rem;
+  background: var(--dock-color-neutral-200);
+  flex-shrink: 0;
+}
+
+/* ── Mode indicator (dev helper) ────────────────────────────────────── */
+.modeBadge {
+  font-size: var(--dock-font-size-xs);
+  color: var(--dock-color-neutral-400);
+  padding: 0 var(--dock-space-1);
+  font-family: monospace;
+  min-width: 4.5rem;
+}

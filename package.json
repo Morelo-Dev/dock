@@ -1,0 +1,28 @@
+{
+  "name": "dock-buttons-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Monorepo for @dock/buttons — an innovative floating button group design system",
+  "scripts": {
+    "dev:demo": "pnpm --filter demo dev",
+    "dev:storybook": "pnpm --filter storybook storybook",
+    "build:core": "pnpm --filter @dock/buttons build",
+    "build:demo": "pnpm --filter demo build",
+    "test": "pnpm --filter @dock/buttons test",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

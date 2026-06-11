@@ -1,0 +1,27 @@
+:root {
+  /* Brand */
+  --dock-color-primary-50: #eff6ff;
+  --dock-color-primary-100: #dbeafe;
+  --dock-color-primary-500: #3b82f6;
+  --dock-color-primary-600: #2563eb;
+  --dock-color-primary-700: #1d4ed8;
+
+  /* Neutral */
+  --dock-color-neutral-0: #ffffff;
+  --dock-color-neutral-50: #f8fafc;
+  --dock-color-neutral-100: #f1f5f9;
+  --dock-color-neutral-200: #e2e8f0;
+  --dock-color-neutral-400: #94a3b8;
+  --dock-color-neutral-500: #64748b;
+  --dock-color-neutral-700: #334155;
+  --dock-color-neutral-900: #0f172a;
+
+  /* Danger */
+  --dock-color-danger-500: #ef4444;
+  --dock-color-danger-600: #dc2626;
+  --dock-color-danger-50: #fef2f2;
+
+  /* Success */
+  --dock-color-success-500: #22c55e;
+  --dock-color-success-50: #f0fdf4;
+}
