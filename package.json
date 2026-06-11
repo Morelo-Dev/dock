@@ -10,9 +10,13 @@
     "build:demo": "pnpm --filter demo build",
     "test": "pnpm --filter @dock/buttons test",
     "lint": "eslint . --ext .ts,.tsx",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm build:core && changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.57.0",
