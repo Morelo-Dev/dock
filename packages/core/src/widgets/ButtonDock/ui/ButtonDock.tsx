@@ -9,23 +9,27 @@ import type { DockMode, Position } from '../../../features/position/model/types'
 
 export type ButtonDockProps = {
   children: ReactNode
-  /** Show current mode label — useful during development */
   showMode?: boolean
-  /** Override z-index for the floating/fixed dock */
   zIndex?: number
+}
+
+const EDGE_MARGIN = 8
+
+function clampViewport(vx: number, vy: number, w: number, h: number): Position {
+  return {
+    x: Math.max(EDGE_MARGIN, Math.min(vx, window.innerWidth  - w - EDGE_MARGIN)),
+    y: Math.max(EDGE_MARGIN, Math.min(vy, window.innerHeight - h - EDGE_MARGIN)),
+  }
 }
 
 function HomeIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M3 12L12 4l9 8" />
-      <path d="M9 21V12h6v9" />
-      <path d="M3 21h18" />
+      <path d="M3 12L12 4l9 8" /><path d="M9 21V12h6v9" /><path d="M3 21h18" />
     </svg>
   )
 }
 
-/** Shown when floating — click fixes the dock to the viewport */
 function PinIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -35,7 +39,6 @@ function PinIcon() {
   )
 }
 
-/** Shown when fixed — click lets the dock scroll with the page */
 function UnpinIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -48,34 +51,53 @@ function UnpinIcon() {
 }
 
 export function ButtonDock({ children, showMode = false, zIndex }: ButtonDockProps) {
-  const { state, startDrag, commit, returnToDock, toggleMode } = useDockState()
-  const rootRef = useRef<HTMLDivElement>(null)
+  const { state, startDrag, commit, returnToDock } = useDockState()
+  const rootRef        = useRef<HTMLDivElement>(null)
   const placeholderRef = useRef<HTMLDivElement>(null)
   const [placeholderSize, setPlaceholderSize] = useState<{ w: number; h: number } | null>(null)
   const [isNearSnap, setIsNearSnap] = useState(false)
   const measuredRef = useRef(false)
 
-  const isDocked = state.mode === 'docked'
+  const isDocked   = state.mode === 'docked'
   const isDragging = state.mode === 'dragging'
   const isFloating = state.mode === 'floating'
-  const isFixed = state.mode === 'fixed'
+  const isFixed    = state.mode === 'fixed'
   const isDetached = !isDocked
 
+  // ── Measure placeholder once while docked ──────────────────────────────────
   useLayoutEffect(() => {
-    if (!isDocked) {
-      measuredRef.current = false
-      return
-    }
+    if (!isDocked) { measuredRef.current = false; return }
     if (measuredRef.current || !rootRef.current) return
     measuredRef.current = true
-    setPlaceholderSize({
-      w: rootRef.current.offsetWidth,
-      h: rootRef.current.offsetHeight,
-    })
+    setPlaceholderSize({ w: rootRef.current.offsetWidth, h: rootRef.current.offsetHeight })
   })
 
+  // ── Post-commit boundary clamp (runs before browser paint) ────────────────
+  // useDrag captures dockW at pointerdown (before extra buttons render), so it
+  // may undercount. Here we re-check with the real rendered size and fix it.
+  useLayoutEffect(() => {
+    if (isDragging || isDocked || !state.position || !rootRef.current) return
+    const { width: w, height: h } = rootRef.current.getBoundingClientRect()
+    if (w === 0) return
+
+    if (isFixed) {
+      const { x: cx, y: cy } = clampViewport(state.position.x, state.position.y, w, h)
+      if (Math.round(cx) !== Math.round(state.position.x) || Math.round(cy) !== Math.round(state.position.y)) {
+        commit({ x: cx, y: cy }, 'fixed')
+      }
+    } else if (isFloating) {
+      const vx = state.position.x - window.scrollX
+      const vy = state.position.y - window.scrollY
+      const { x: cx, y: cy } = clampViewport(vx, vy, w, h)
+      if (Math.round(cx) !== Math.round(vx) || Math.round(cy) !== Math.round(vy)) {
+        commit({ x: cx + window.scrollX, y: cy + window.scrollY }, 'floating')
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.position, state.mode])
+
   const handleDragStart = useCallback(
-    (initialViewportPos: Position) => { startDrag(initialViewportPos) },
+    (pos: Position) => { startDrag(pos) },
     [startDrag],
   )
 
@@ -100,20 +122,27 @@ export function ButtonDock({ children, showMode = false, zIndex }: ButtonDockPro
     onSnapChange: setIsNearSnap,
   })
 
+  const handleToggleMode = useCallback(() => {
+    if (!state.position || !rootRef.current) return
+    const { width: w, height: h } = rootRef.current.getBoundingClientRect()
+    if (isFloating) {
+      const { x, y } = clampViewport(
+        state.position.x - window.scrollX,
+        state.position.y - window.scrollY,
+        w, h,
+      )
+      commit({ x, y }, 'fixed')
+    } else if (isFixed) {
+      commit({ x: state.position.x + window.scrollX, y: state.position.y + window.scrollY }, 'floating')
+    }
+  }, [state, isFloating, isFixed, commit])
+
   function getPositionStyle(): React.CSSProperties {
     if (isDocked) return {}
     if (!state.position) return {}
     const z = zIndex ?? (isDragging ? 9999 : 1000)
-    if (isDragging) {
-      return { position: 'fixed', left: state.position.x, top: state.position.y, margin: 0, zIndex: z }
-    }
-    return {
-      position: isFixed ? 'fixed' : 'absolute',
-      left: state.position.x,
-      top: state.position.y,
-      margin: 0,
-      zIndex: z,
-    }
+    if (isDragging) return { position: 'fixed', left: state.position.x, top: state.position.y, margin: 0, zIndex: z }
+    return { position: isFixed ? 'fixed' : 'absolute', left: state.position.x, top: state.position.y, margin: 0, zIndex: z }
   }
 
   const dockEl = (
@@ -136,10 +165,10 @@ export function ButtonDock({ children, showMode = false, zIndex }: ButtonDockPro
         <>
           <div className={styles.divider} aria-hidden />
           <button
-            className={cn(styles.iconBtn, (isFloating || isFixed) && styles.pinBtn)}
-            onClick={toggleMode}
+            className={cn(styles.iconBtn, isFixed && styles.pinBtn)}
+            onClick={handleToggleMode}
             aria-label={isFixed ? 'Desfijar — desplazar con el scroll' : 'Fijar en pantalla'}
-            title={isFixed ? 'Desfijar — desplazar con el scroll' : 'Fijar en pantalla'}
+            title={isFixed    ? 'Desfijar — desplazar con el scroll' : 'Fijar en pantalla'}
           >
             {isFixed ? <UnpinIcon /> : <PinIcon />}
           </button>
@@ -159,7 +188,6 @@ export function ButtonDock({ children, showMode = false, zIndex }: ButtonDockPro
 
   return (
     <>
-      {/* Placeholder: reserva el espacio original y permite restaurar el dock */}
       <div
         ref={placeholderRef}
         className={cn(styles.placeholder, isDetached && styles.visible, isNearSnap && styles.snapActive)}
@@ -173,12 +201,10 @@ export function ButtonDock({ children, showMode = false, zIndex }: ButtonDockPro
             aria-label="Restaurar panel aquí"
             title="Restaurar panel aquí"
           >
-            <HomeIcon />
-            <span>Restaurar aquí</span>
+            <HomeIcon /><span>Restaurar aquí</span>
           </button>
         )}
       </div>
-
       {isDocked ? dockEl : createPortal(dockEl, document.body)}
     </>
   )
