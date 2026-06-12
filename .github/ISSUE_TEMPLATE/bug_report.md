@@ -1,4 +1,4 @@
-﻿---
+---
 name: Bug report
 about: Reporta un error o comportamiento inesperado
 title: 'fix: '

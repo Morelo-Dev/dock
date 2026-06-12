@@ -1,4 +1,4 @@
-﻿# @deandre-dock/buttons — Shadcn/ui Registry
+# @deandre-dock/buttons — Shadcn/ui Registry
 
 Instala `ButtonDock` directamente en tu proyecto Shadcn con el CLI oficial.
 

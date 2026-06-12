@@ -1,4 +1,4 @@
-﻿import '../../shadcn.css'
+import '../../shadcn.css'
 import { Button, ButtonDock as CoreButtonDock } from '@deandre-dock/buttons'
 import { ButtonDock as ShadcnButtonDock } from '@deandre-dock/shadcn/components/button-dock'
 import styles from './Shadcn.module.css'

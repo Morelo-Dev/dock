@@ -1,4 +1,4 @@
-﻿# @deandre-dock/buttons
+# @deandre-dock/buttons
 
 > Un sistema de diseño con un ButtonGroup flotante e inteligente para React.
 

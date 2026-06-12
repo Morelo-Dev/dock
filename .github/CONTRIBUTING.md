@@ -1,4 +1,4 @@
-﻿# Guía de Contribución
+# Guía de Contribución
 
 ¡Gracias por querer contribuir a `@deandre-dock/buttons`! Este documento explica cómo hacerlo.
 

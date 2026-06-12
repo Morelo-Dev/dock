@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { Button, ButtonDock } from '@deandre-dock/buttons'
 import { STUDENTS, SUBJECTS } from '../../entities/student/model/mockData'
 import type { Student } from '../../entities/student/model/types'

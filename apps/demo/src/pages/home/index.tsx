@@ -1,4 +1,4 @@
-﻿import { Button, ButtonDock } from '@deandre-dock/buttons'
+import { Button, ButtonDock } from '@deandre-dock/buttons'
 import styles from './Home.module.css'
 
 const SaveIcon = () => (
