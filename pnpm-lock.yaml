@@ -35,7 +35,7 @@ importers:
 
   apps/demo:
     dependencies:
-      '@dock/buttons':
+      '@deandre-dock/buttons':
         specifier: workspace:*
         version: link:../../packages/core
       react:
@@ -78,7 +78,7 @@ importers:
 
   apps/storybook:
     dependencies:
-      '@dock/buttons':
+      '@deandre-dock/buttons':
         specifier: workspace:*
         version: link:../../packages/core
       react:
