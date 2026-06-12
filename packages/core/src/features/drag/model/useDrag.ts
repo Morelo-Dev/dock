@@ -2,11 +2,20 @@ import { useCallback, useEffect, useRef } from 'react'
 import type { RefObject } from 'react'
 import type { DockMode, Position } from '../../position/model/types'
 
+type SavedStyles = {
+  position: string
+  left: string
+  top: string
+  margin: string
+  zIndex: string
+}
+
 type DragState = {
   offsetX: number
   offsetY: number
   startClientX: number
   startClientY: number
+  savedStyles: SavedStyles
 }
 
 type UseDragOptions = {
@@ -20,6 +29,16 @@ type UseDragOptions = {
 
 const DRAG_THRESHOLD_PX = 6
 const SNAP_PADDING_PX = 48
+
+function restoreStyle(el: HTMLElement, saved: SavedStyles) {
+  const set = (prop: string, val: string) =>
+    val ? el.style.setProperty(prop, val) : el.style.removeProperty(prop)
+  set('position', saved.position)
+  set('left', saved.left)
+  set('top', saved.top)
+  set('margin', saved.margin)
+  set('z-index', saved.zIndex)
+}
 
 export function useDrag({
   rootRef,
@@ -59,7 +78,7 @@ export function useDrag({
     rootRef.current.style.left = `${e.clientX - drag.current.offsetX}px`
     rootRef.current.style.top = `${e.clientY - drag.current.offsetY}px`
 
-    // Snap-to-home hit test — is the pointer over the placeholder zone?
+    // Snap-to-home hit test
     if (placeholderRef?.current) {
       const pr = placeholderRef.current.getBoundingClientRect()
       const near =
@@ -76,7 +95,7 @@ export function useDrag({
 
   const handleUp = useRef((e: PointerEvent) => {
     if (!drag.current) return
-    const { offsetX, offsetY } = drag.current
+    const { offsetX, offsetY, savedStyles } = drag.current
     const wasDragging = isDragging.current
     drag.current = null
     isDragging.current = false
@@ -91,14 +110,11 @@ export function useDrag({
     }
 
     if (!wasDragging) {
-      // Single tap — restore any inline styles applied on pointerdown
-      if (rootRef.current) {
-        rootRef.current.style.removeProperty('position')
-        rootRef.current.style.removeProperty('left')
-        rootRef.current.style.removeProperty('top')
-        rootRef.current.style.removeProperty('margin')
-        rootRef.current.style.removeProperty('z-index')
-      }
+      // Tap — restore exactly the styles that were present before pointerdown.
+      // Using removeProperty here would also wipe React-managed styles (position,
+      // left, top set via the style prop) and leave the element without position,
+      // causing it to fall to its natural DOM flow position (bottom of body).
+      if (rootRef.current) restoreStyle(rootRef.current, savedStyles)
       return
     }
 
@@ -134,20 +150,36 @@ export function useDrag({
       if (e.button !== 0 || !rootRef.current) return
       e.preventDefault()
 
-      const rect = rootRef.current.getBoundingClientRect()
+      const el = rootRef.current
+      const rect = el.getBoundingClientRect()
+
+      // Save the current inline styles so we can restore them on a tap (no drag).
+      // React manages position/left/top via element.style too, so removeProperty
+      // would wipe them — we must save and restore instead.
+      const savedStyles: SavedStyles = {
+        position: el.style.position,
+        left: el.style.left,
+        top: el.style.top,
+        margin: el.style.margin,
+        zIndex: el.style.zIndex,
+      }
+
       drag.current = {
         offsetX: e.clientX - rect.left,
         offsetY: e.clientY - rect.top,
         startClientX: e.clientX,
         startClientY: e.clientY,
+        savedStyles,
       }
       isDragging.current = false
 
-      rootRef.current.style.position = 'fixed'
-      rootRef.current.style.left = `${rect.left}px`
-      rootRef.current.style.top = `${rect.top}px`
-      rootRef.current.style.margin = '0'
-      rootRef.current.style.zIndex = '9999'
+      // Switch to fixed so the element follows the pointer from its current
+      // viewport position regardless of scroll or prior positioning mode.
+      el.style.position = 'fixed'
+      el.style.left = `${rect.left}px`
+      el.style.top = `${rect.top}px`
+      el.style.margin = '0'
+      el.style.zIndex = '9999'
 
       window.addEventListener('pointermove', handleMove.current)
       window.addEventListener('pointerup', handleUp.current)
