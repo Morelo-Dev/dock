@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Button, ButtonDock } from '@dock/buttons'
+﻿import { useState } from 'react'
+import { Button, ButtonDock } from '@deandre-dock/buttons'
 import { STUDENTS, SUBJECTS } from '../../entities/student/model/mockData'
 import type { Student } from '../../entities/student/model/types'
 import styles from './Gradebook.module.css'

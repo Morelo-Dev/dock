@@ -1,7 +1,7 @@
-{
-  "name": "@dock/buttons-shadcn",
+﻿{
+  "name": "@deandre-dock/buttons-shadcn",
   "version": "0.1.0",
-  "description": "Shadcn/ui registry for @dock/buttons — ButtonDock and Button components",
+  "description": "Shadcn/ui registry for @deandre-dock/buttons — ButtonDock and Button components",
   "type": "module",
   "files": ["registry.json", "src"],
   "scripts": {

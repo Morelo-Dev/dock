@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+﻿import { NavLink } from 'react-router-dom'
 import styles from './Navbar.module.css'
 
 export function Navbar() {
@@ -6,7 +6,7 @@ export function Navbar() {
     <header className={styles.header}>
       <div className={styles.brand}>
         <span className={styles.logo}>⬡</span>
-        <span className={styles.name}>@dock/buttons</span>
+        <span className={styles.name}>@deandre-dock/buttons</span>
       </div>
       <nav className={styles.nav}>
         <NavLink to="/" end className={({ isActive }) => isActive ? styles.active : ''}>

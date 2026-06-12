@@ -1,6 +1,6 @@
-import '../../shadcn.css'
-import { Button, ButtonDock as CoreButtonDock } from '@dock/buttons'
-import { ButtonDock as ShadcnButtonDock } from '@dock/shadcn/components/button-dock'
+﻿import '../../shadcn.css'
+import { Button, ButtonDock as CoreButtonDock } from '@deandre-dock/buttons'
+import { ButtonDock as ShadcnButtonDock } from '@deandre-dock/shadcn/components/button-dock'
 import styles from './Shadcn.module.css'
 
 const SaveIcon = () => (
@@ -44,7 +44,7 @@ export function ShadcnPage() {
         {/* ── Core ───────────────────────────────────────────── */}
         <section className={styles.card}>
           <header className={styles.cardHeader}>
-            <span className={styles.badge}>@dock/buttons</span>
+            <span className={styles.badge}>@deandre-dock/buttons</span>
             <h2 className={styles.cardTitle}>Core</h2>
             <p className={styles.cardDesc}>
               Tokens CSS propios (<code>--dock-*</code>), sin dependencias de
@@ -70,7 +70,7 @@ export function ShadcnPage() {
         {/* ── Shadcn ─────────────────────────────────────────── */}
         <section className={styles.card}>
           <header className={styles.cardHeader}>
-            <span className={[styles.badge, styles.badgeShadcn].join(' ')}>@dock/buttons-shadcn</span>
+            <span className={[styles.badge, styles.badgeShadcn].join(' ')}>@deandre-dock/buttons-shadcn</span>
             <h2 className={styles.cardTitle}>Shadcn/ui</h2>
             <p className={styles.cardDesc}>
               Usa los tokens de Shadcn (<code>bg-background</code>,{' '}
@@ -106,7 +106,7 @@ export function ShadcnPage() {
         <div className={styles.codeGrid}>
           <div>
             <p className={styles.codeLabel}>Core (npm)</p>
-            <pre className={styles.code}><code>npm i @dock/buttons</code></pre>
+            <pre className={styles.code}><code>npm i @deandre-dock/buttons</code></pre>
           </div>
           <div>
             <p className={styles.codeLabel}>Shadcn registry</p>

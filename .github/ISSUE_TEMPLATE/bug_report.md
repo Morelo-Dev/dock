@@ -1,4 +1,4 @@
----
+﻿---
 name: Bug report
 about: Reporta un error o comportamiento inesperado
 title: 'fix: '
@@ -33,7 +33,7 @@ Descripción clara y concisa del bug.
 
 ## Entorno
 
-- `@dock/buttons` version: 
+- `@deandre-dock/buttons` version: 
 - React version: 
 - Browser: 
 - OS: 

@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { Button, ButtonDock } from '@dock/buttons'
+﻿import type { Meta, StoryObj } from '@storybook/react'
+import { Button, ButtonDock } from '@deandre-dock/buttons'
 
 const meta: Meta<typeof ButtonDock> = {
   title: 'Widgets/ButtonDock',

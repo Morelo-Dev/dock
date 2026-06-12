@@ -1,9 +1,9 @@
-{
+﻿{
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@dock/buttons": ["../../packages/core/src/index.ts"]
+      "@deandre-dock/buttons": ["../../packages/core/src/index.ts"]
     }
   },
   "include": ["src", ".storybook"]

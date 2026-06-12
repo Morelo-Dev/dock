@@ -1,5 +1,5 @@
-{
-  "name": "@dock/buttons",
+﻿{
+  "name": "@deandre-dock/buttons",
   "version": "0.1.0",
   "description": "Innovative floating button group design system for React",
   "type": "module",

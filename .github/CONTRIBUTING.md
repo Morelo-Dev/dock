@@ -1,6 +1,6 @@
-# Guía de Contribución
+﻿# Guía de Contribución
 
-¡Gracias por querer contribuir a `@dock/buttons`! Este documento explica cómo hacerlo.
+¡Gracias por querer contribuir a `@deandre-dock/buttons`! Este documento explica cómo hacerlo.
 
 ---
 
@@ -162,7 +162,7 @@ Tipos válidos: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 Usa el [template de bug report](../../issues/new?template=bug_report.md) e incluye:
 
-1. Versión de `@dock/buttons`
+1. Versión de `@deandre-dock/buttons`
 2. Versión de React
 3. Descripción del comportamiento esperado vs el actual
 4. Pasos para reproducir

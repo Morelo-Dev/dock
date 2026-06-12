@@ -1,4 +1,4 @@
-# @dock/buttons — Shadcn/ui Registry
+﻿# @deandre-dock/buttons — Shadcn/ui Registry
 
 Instala `ButtonDock` directamente en tu proyecto Shadcn con el CLI oficial.
 
@@ -54,7 +54,7 @@ export function MyPage() {
 | Arrastrar handle `⠿` + soltar en borde | Modo **fixed** — anclado al viewport |
 | Doble toque en handle | Vuelve a la zona original (**docked**) |
 
-## Diferencias con `@dock/buttons`
+## Diferencias con `@deandre-dock/buttons`
 
 Esta versión usa los tokens CSS de Shadcn (`--background`, `--border`, `--muted`, etc.)
 en lugar de los tokens propios de la librería. No requiere `ThemeProvider`.

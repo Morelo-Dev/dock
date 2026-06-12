@@ -1,4 +1,4 @@
-import { Button, ButtonDock } from '@dock/buttons'
+﻿import { Button, ButtonDock } from '@deandre-dock/buttons'
 import styles from './Home.module.css'
 
 const SaveIcon = () => (
@@ -32,7 +32,7 @@ export function HomePage() {
           <span className={styles.accent}>a tu flujo de trabajo</span>
         </h1>
         <p className={styles.subtitle}>
-          <code>@dock/buttons</code> — Un sistema de diseño con un ButtonDock flotante
+          <code>@deandre-dock/buttons</code> — Un sistema de diseño con un ButtonDock flotante
           que el usuario puede mover, fijar y anclar libremente en pantalla.
         </p>
       </section>

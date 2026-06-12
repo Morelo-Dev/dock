@@ -1,4 +1,4 @@
-import type { StorybookConfig } from '@storybook/react-vite'
+﻿import type { StorybookConfig } from '@storybook/react-vite'
 import { resolve } from 'path'
 
 const config: StorybookConfig = {
@@ -16,7 +16,7 @@ const config: StorybookConfig = {
     config.resolve ??= {}
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@dock/buttons': resolve(__dirname, '../../../packages/core/src/index.ts'),
+      '@deandre-dock/buttons': resolve(__dirname, '../../../packages/core/src/index.ts'),
     }
     return config
   },

@@ -1,10 +1,10 @@
-{
+﻿{
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@dock/buttons": ["../../packages/core/src/index.ts"],
-      "@dock/shadcn/*": ["../../packages/shadcn/src/*"],
+      "@deandre-dock/buttons": ["../../packages/core/src/index.ts"],
+      "@deandre-dock/shadcn/*": ["../../packages/shadcn/src/*"],
       "@/lib/utils": ["./src/lib/utils.ts"]
     }
   },

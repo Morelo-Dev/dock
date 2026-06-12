@@ -1,16 +1,16 @@
-# @dock/buttons
+﻿# @deandre-dock/buttons
 
 > Un sistema de diseño con un ButtonGroup flotante e inteligente para React.
 
-[![npm version](https://img.shields.io/npm/v/@dock/buttons)](https://www.npmjs.com/package/@dock/buttons)
-[![license](https://img.shields.io/npm/l/@dock/buttons)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/@deandre-dock/buttons)](https://www.npmjs.com/package/@deandre-dock/buttons)
+[![license](https://img.shields.io/npm/l/@deandre-dock/buttons)](./LICENSE)
 [![pnpm](https://img.shields.io/badge/maintained%20with-pnpm-cc00ff)](https://pnpm.io)
 
 ---
 
 ## ¿Qué es?
 
-`@dock/buttons` resuelve un problema real: en interfaces densas (tablas, formularios largos, editores), las acciones contextuales quedan lejos de donde el usuario está trabajando.
+`@deandre-dock/buttons` resuelve un problema real: en interfaces densas (tablas, formularios largos, editores), las acciones contextuales quedan lejos de donde el usuario está trabajando.
 
 **ButtonDock** es un contenedor de botones que el usuario puede mover libremente:
 
@@ -37,11 +37,11 @@
 ## Instalación
 
 ```bash
-pnpm add @dock/buttons
+pnpm add @deandre-dock/buttons
 # o
-npm install @dock/buttons
+npm install @deandre-dock/buttons
 # o
-yarn add @dock/buttons
+yarn add @deandre-dock/buttons
 ```
 
 ### Para proyectos Shadcn/ui
@@ -55,7 +55,7 @@ npx shadcn add https://dock-buttons.dev/registry.json/button-dock
 ## Uso rápido
 
 ```tsx
-import { ThemeProvider, ButtonDock, Button } from '@dock/buttons'
+import { ThemeProvider, ButtonDock, Button } from '@deandre-dock/buttons'
 
 // Envuelve tu app con ThemeProvider (una sola vez)
 export function App() {
@@ -129,8 +129,8 @@ export function MyPage() {
 ```
 dock-buttons/
 ├── packages/
-│   ├── core/          @dock/buttons          — librería principal (React + TS)
-│   └── shadcn/        @dock/buttons-shadcn   — registry para Shadcn/ui
+│   ├── core/          @deandre-dock/buttons          — librería principal (React + TS)
+│   └── shadcn/        @deandre-dock/buttons-shadcn   — registry para Shadcn/ui
 ├── apps/
 │   ├── demo/          demo pública (Vite + React)
 │   └── storybook/     documentación interactiva
