@@ -35,6 +35,30 @@ function DockHandle({ onPointerDown }: { onPointerDown: React.PointerEventHandle
   )
 }
 
+// ── HomeButton ────────────────────────────────────────────────────────────────
+
+function HomeButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label="Volver al lugar de origen"
+      title="Volver al lugar de origen"
+      className={cn(
+        "flex items-center justify-center w-7 h-7 rounded-sm shrink-0",
+        "text-muted-foreground cursor-pointer touch-none border-none bg-transparent p-0",
+        "hover:bg-primary/10 hover:text-primary",
+        "active:bg-primary/20 transition-colors",
+      )}
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M3 12L12 4l9 8" />
+        <path d="M9 21V12h6v9" />
+        <path d="M3 21h18" />
+      </svg>
+    </button>
+  )
+}
+
 // ── ButtonDock ────────────────────────────────────────────────────────────────
 
 export interface ButtonDockProps {
@@ -47,7 +71,9 @@ export interface ButtonDockProps {
 export function ButtonDock({ children, showMode = false, className }: ButtonDockProps) {
   const { state, startDrag, commit, returnToDock } = useDockState()
   const rootRef = React.useRef<HTMLDivElement>(null)
+  const placeholderRef = React.useRef<HTMLDivElement>(null)
   const [placeholderSize, setPlaceholderSize] = React.useState<{ w: number; h: number } | null>(null)
+  const [isNearSnap, setIsNearSnap] = React.useState(false)
   const measuredRef = React.useRef(false)
 
   const isDocked = state.mode === "docked"
@@ -75,9 +101,11 @@ export function ButtonDock({ children, showMode = false, className }: ButtonDock
 
   const { onPointerDown } = useDrag({
     rootRef,
+    placeholderRef,
     onDragStart: handleDragStart,
     onDragEnd: handleDragEnd,
     onReturnToDock: returnToDock,
+    onSnapChange: setIsNearSnap,
   })
 
   function getPositionStyle(): React.CSSProperties {
@@ -110,15 +138,22 @@ export function ButtonDock({ children, showMode = false, className }: ButtonDock
       className={cn(
         "inline-flex items-center gap-2 px-3 py-2 w-max",
         "bg-background border border-border rounded-lg",
-        "shadow-md select-none font-sans",
+        "shadow-md select-none font-sans transition-[box-shadow,border-color]",
         isDetached && "shadow-xl",
         isDragging && "shadow-2xl cursor-grabbing",
+        isNearSnap && "ring-2 ring-primary border-primary",
         className,
       )}
     >
       <DockHandle onPointerDown={onPointerDown} />
       <div className="w-px h-5 bg-border shrink-0" aria-hidden />
       {children}
+      {isDetached && (
+        <>
+          <div className="w-px h-5 bg-border shrink-0" aria-hidden />
+          <HomeButton onClick={returnToDock} />
+        </>
+      )}
       {showMode && (
         <span className="text-xs text-muted-foreground font-mono min-w-[4.5rem]">
           {state.mode}
@@ -131,11 +166,15 @@ export function ButtonDock({ children, showMode = false, className }: ButtonDock
     <>
       {/* Placeholder reserves the home-zone space when detached */}
       <div
+        ref={placeholderRef}
         aria-hidden
         className={cn(
-          "inline-flex border-2 border-dashed border-border rounded-lg bg-muted/30",
-          "pointer-events-none transition-opacity duration-200",
+          "inline-flex border-2 border-dashed rounded-lg",
+          "pointer-events-none transition-all duration-150",
           isDetached ? "opacity-100" : "opacity-0",
+          isNearSnap
+            ? "border-primary bg-primary/8 shadow-[0_0_0_4px_hsl(var(--primary)/0.15)] animate-pulse"
+            : "border-border bg-muted/30",
         )}
         style={placeholderSize ? { width: placeholderSize.w, height: placeholderSize.h } : undefined}
       />

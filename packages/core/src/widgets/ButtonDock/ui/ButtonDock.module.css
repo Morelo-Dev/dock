@@ -7,11 +7,28 @@
   background: var(--dock-color-neutral-50);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--dock-transition-base);
+  transition:
+    opacity var(--dock-transition-base),
+    border-color 150ms ease,
+    background-color 150ms ease,
+    box-shadow 150ms ease;
 }
 
 .placeholder.visible {
   opacity: 1;
+}
+
+/* Snap-to-home feedback — el placeholder "llama" al dock */
+.placeholder.snapActive {
+  border-color: var(--dock-color-primary-400);
+  background-color: color-mix(in srgb, var(--dock-color-primary-500) 8%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--dock-color-primary-500) 18%, transparent);
+  animation: snapPulse 800ms ease-in-out infinite;
+}
+
+@keyframes snapPulse {
+  0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--dock-color-primary-500) 18%, transparent); }
+  50%       { box-shadow: 0 0 0 8px color-mix(in srgb, var(--dock-color-primary-500) 8%, transparent); }
 }
 
 /* ── Dock root ───────────────────────────────────────────────────────── */
@@ -73,6 +90,39 @@
   height: 1.25rem;
   background: var(--dock-color-neutral-200);
   flex-shrink: 0;
+}
+
+/* Arrastrando cerca del home — el dock mismo da feedback de "puede volver" */
+.root.snapping {
+  box-shadow: 0 0 0 3px var(--dock-color-primary-400), 0 16px 24px -6px rgb(0 0 0 / 0.18);
+  border-color: var(--dock-color-primary-400);
+}
+
+/* ── Home button (volver al origen) ─────────────────────────────────── */
+.homeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: none;
+  border-radius: var(--dock-radius-sm);
+  background: transparent;
+  color: var(--dock-color-neutral-400);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: background-color var(--dock-transition-fast), color var(--dock-transition-fast);
+  touch-action: none;
+}
+
+.homeBtn:hover {
+  background-color: color-mix(in srgb, var(--dock-color-primary-500) 12%, transparent);
+  color: var(--dock-color-primary-600);
+}
+
+.homeBtn:active {
+  background-color: color-mix(in srgb, var(--dock-color-primary-500) 22%, transparent);
 }
 
 /* ── Mode indicator (dev helper) ────────────────────────────────────── */

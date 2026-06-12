@@ -4,25 +4,31 @@ import type { DockMode, Position } from './use-dock-state'
 
 type UseDragOptions = {
   rootRef: RefObject<HTMLElement | null>
+  placeholderRef?: RefObject<HTMLElement | null>
   onDragStart: (pos: Position) => void
   onDragEnd: (pos: Position, mode: DockMode) => void
   onReturnToDock: () => void
+  onSnapChange?: (isNear: boolean) => void
 }
 
 const DRAG_THRESHOLD_PX = 6
 const DOUBLE_TAP_MS = 320
+const SNAP_PADDING_PX = 48
 
-export function useDrag({ rootRef, onDragStart, onDragEnd, onReturnToDock }: UseDragOptions) {
+export function useDrag({ rootRef, placeholderRef, onDragStart, onDragEnd, onReturnToDock, onSnapChange }: UseDragOptions) {
   const drag = useRef<{ offsetX: number; offsetY: number; startClientX: number; startClientY: number } | null>(null)
   const lastTapTime = useRef(0)
   const isDragging = useRef(false)
+  const isNearSnap = useRef(false)
 
   const onDragEndRef = useRef(onDragEnd)
   const onDragStartRef = useRef(onDragStart)
   const onReturnRef = useRef(onReturnToDock)
+  const onSnapChangeRef = useRef(onSnapChange)
   useEffect(() => { onDragEndRef.current = onDragEnd }, [onDragEnd])
   useEffect(() => { onDragStartRef.current = onDragStart }, [onDragStart])
   useEffect(() => { onReturnRef.current = onReturnToDock }, [onReturnToDock])
+  useEffect(() => { onSnapChangeRef.current = onSnapChange }, [onSnapChange])
 
   const handleMove = useRef((e: PointerEvent) => {
     if (!drag.current || !rootRef.current) return
@@ -31,9 +37,22 @@ export function useDrag({ rootRef, onDragStart, onDragEnd, onReturnToDock }: Use
       isDragging.current = true
       onDragStartRef.current({ x: drag.current.startClientX, y: drag.current.startClientY })
     }
-    if (isDragging.current) {
-      rootRef.current.style.left = `${e.clientX - drag.current.offsetX}px`
-      rootRef.current.style.top = `${e.clientY - drag.current.offsetY}px`
+    if (!isDragging.current) return
+
+    rootRef.current.style.left = `${e.clientX - drag.current.offsetX}px`
+    rootRef.current.style.top = `${e.clientY - drag.current.offsetY}px`
+
+    if (placeholderRef?.current) {
+      const pr = placeholderRef.current.getBoundingClientRect()
+      const near =
+        e.clientX >= pr.left - SNAP_PADDING_PX &&
+        e.clientX <= pr.right + SNAP_PADDING_PX &&
+        e.clientY >= pr.top - SNAP_PADDING_PX &&
+        e.clientY <= pr.bottom + SNAP_PADDING_PX
+      if (near !== isNearSnap.current) {
+        isNearSnap.current = near
+        onSnapChangeRef.current?.(near)
+      }
     }
   })
 
@@ -45,6 +64,11 @@ export function useDrag({ rootRef, onDragStart, onDragEnd, onReturnToDock }: Use
     isDragging.current = false
     window.removeEventListener('pointermove', handleMove.current)
     window.removeEventListener('pointerup', handleUp.current)
+
+    if (isNearSnap.current) {
+      isNearSnap.current = false
+      onSnapChangeRef.current?.(false)
+    }
 
     if (!wasDragging) {
       if (rootRef.current) {
@@ -62,6 +86,24 @@ export function useDrag({ rootRef, onDragStart, onDragEnd, onReturnToDock }: Use
         lastTapTime.current = now
       }
       return
+    }
+
+    // Dropped over home zone → snap back
+    if (placeholderRef?.current) {
+      const pr = placeholderRef.current.getBoundingClientRect()
+      const vx = e.clientX - offsetX
+      const vy = e.clientY - offsetY
+      const w = rootRef.current?.offsetWidth ?? 0
+      const h = rootRef.current?.offsetHeight ?? 0
+      const overHome =
+        vx + w / 2 >= pr.left - SNAP_PADDING_PX &&
+        vx + w / 2 <= pr.right + SNAP_PADDING_PX &&
+        vy + h / 2 >= pr.top - SNAP_PADDING_PX &&
+        vy + h / 2 <= pr.bottom + SNAP_PADDING_PX
+      if (overHome) {
+        onReturnRef.current()
+        return
+      }
     }
 
     const vx = e.clientX - offsetX

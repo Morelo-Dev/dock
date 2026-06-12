@@ -13,10 +13,22 @@ export type ButtonDockProps = {
   showMode?: boolean
 }
 
+function HomeIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3 12L12 4l9 8" />
+      <path d="M9 21V12h6v9" />
+      <path d="M3 21h18" />
+    </svg>
+  )
+}
+
 export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
   const { state, startDrag, commit, returnToDock } = useDockState()
   const rootRef = useRef<HTMLDivElement>(null)
+  const placeholderRef = useRef<HTMLDivElement>(null)
   const [placeholderSize, setPlaceholderSize] = useState<{ w: number; h: number } | null>(null)
+  const [isNearSnap, setIsNearSnap] = useState(false)
   const measuredRef = useRef(false)
 
   const isDocked = state.mode === 'docked'
@@ -38,9 +50,7 @@ export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
   })
 
   const handleDragStart = useCallback(
-    (initialViewportPos: Position) => {
-      startDrag(initialViewportPos)
-    },
+    (initialViewportPos: Position) => { startDrag(initialViewportPos) },
     [startDrag],
   )
 
@@ -58,16 +68,16 @@ export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
 
   const { onPointerDown } = useDrag({
     rootRef,
+    placeholderRef,
     onDragStart: handleDragStart,
     onDragEnd: handleDragEnd,
     onReturnToDock: returnToDock,
+    onSnapChange: setIsNearSnap,
   })
 
   function getPositionStyle(): React.CSSProperties {
     if (isDocked) return {}
     if (!state.position) return {}
-    // Dragging always uses fixed so the element follows the pointer
-    // across the viewport regardless of scroll position.
     if (isDragging) {
       return {
         position: 'fixed',
@@ -96,11 +106,25 @@ export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
         styles.root,
         isDetached && styles.detached,
         isDragging && styles.dragging,
+        isNearSnap && styles.snapping,
       )}
     >
       <DockHandle onPointerDown={onPointerDown} />
       <div className={styles.divider} aria-hidden />
       {children}
+      {isDetached && (
+        <>
+          <div className={styles.divider} aria-hidden />
+          <button
+            className={styles.homeBtn}
+            onClick={returnToDock}
+            aria-label="Volver al lugar de origen"
+            title="Volver al lugar de origen"
+          >
+            <HomeIcon />
+          </button>
+        </>
+      )}
       {showMode && <span className={styles.modeBadge}>{state.mode}</span>}
     </div>
   )
@@ -109,7 +133,8 @@ export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
     <>
       {/* Placeholder: reserva el espacio original cuando el dock está despegado */}
       <div
-        className={cn(styles.placeholder, isDetached && styles.visible)}
+        ref={placeholderRef}
+        className={cn(styles.placeholder, isDetached && styles.visible, isNearSnap && styles.snapActive)}
         aria-hidden
         style={placeholderSize ? { width: placeholderSize.w, height: placeholderSize.h } : undefined}
       />
