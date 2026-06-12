@@ -11,11 +11,13 @@ export type ButtonDockProps = {
   children: ReactNode
   /** Show current mode label — useful during development */
   showMode?: boolean
+  /** Override z-index for the floating/fixed dock */
+  zIndex?: number
 }
 
 function HomeIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M3 12L12 4l9 8" />
       <path d="M9 21V12h6v9" />
       <path d="M3 21h18" />
@@ -23,8 +25,30 @@ function HomeIcon() {
   )
 }
 
-export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
-  const { state, startDrag, commit, returnToDock } = useDockState()
+/** Shown when floating — click fixes the dock to the viewport */
+function PinIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <line x1="12" y1="17" x2="12" y2="22" />
+      <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" />
+    </svg>
+  )
+}
+
+/** Shown when fixed — click lets the dock scroll with the page */
+function UnpinIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <line x1="2" y1="2" x2="22" y2="22" />
+      <line x1="12" y1="17" x2="12" y2="22" />
+      <path d="M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h12" />
+      <path d="M15 9.34V6h1a2 2 0 0 0 0-4H7.89" />
+    </svg>
+  )
+}
+
+export function ButtonDock({ children, showMode = false, zIndex }: ButtonDockProps) {
+  const { state, startDrag, commit, returnToDock, toggleMode } = useDockState()
   const rootRef = useRef<HTMLDivElement>(null)
   const placeholderRef = useRef<HTMLDivElement>(null)
   const [placeholderSize, setPlaceholderSize] = useState<{ w: number; h: number } | null>(null)
@@ -33,9 +57,10 @@ export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
 
   const isDocked = state.mode === 'docked'
   const isDragging = state.mode === 'dragging'
+  const isFloating = state.mode === 'floating'
+  const isFixed = state.mode === 'fixed'
   const isDetached = !isDocked
 
-  // Measure dock once while docked. Guard ref prevents set→re-render→measure loop.
   useLayoutEffect(() => {
     if (!isDocked) {
       measuredRef.current = false
@@ -78,21 +103,16 @@ export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
   function getPositionStyle(): React.CSSProperties {
     if (isDocked) return {}
     if (!state.position) return {}
+    const z = zIndex ?? (isDragging ? 9999 : 1000)
     if (isDragging) {
-      return {
-        position: 'fixed',
-        left: state.position.x,
-        top: state.position.y,
-        margin: 0,
-        zIndex: 9999,
-      }
+      return { position: 'fixed', left: state.position.x, top: state.position.y, margin: 0, zIndex: z }
     }
     return {
-      position: state.mode === 'fixed' ? 'fixed' : 'absolute',
+      position: isFixed ? 'fixed' : 'absolute',
       left: state.position.x,
       top: state.position.y,
       margin: 0,
-      zIndex: 1000,
+      zIndex: z,
     }
   }
 
@@ -112,11 +132,19 @@ export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
       <DockHandle onPointerDown={onPointerDown} />
       <div className={styles.divider} aria-hidden />
       {children}
-      {isDetached && (
+      {isDetached && !isDragging && (
         <>
           <div className={styles.divider} aria-hidden />
           <button
-            className={styles.homeBtn}
+            className={cn(styles.iconBtn, (isFloating || isFixed) && styles.pinBtn)}
+            onClick={toggleMode}
+            aria-label={isFixed ? 'Desfijar — desplazar con el scroll' : 'Fijar en pantalla'}
+            title={isFixed ? 'Desfijar — desplazar con el scroll' : 'Fijar en pantalla'}
+          >
+            {isFixed ? <UnpinIcon /> : <PinIcon />}
+          </button>
+          <button
+            className={cn(styles.iconBtn, styles.homeBtn)}
             onClick={returnToDock}
             aria-label="Volver al lugar de origen"
             title="Volver al lugar de origen"
@@ -131,15 +159,26 @@ export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
 
   return (
     <>
-      {/* Placeholder: reserva el espacio original cuando el dock está despegado */}
+      {/* Placeholder: reserva el espacio original y permite restaurar el dock */}
       <div
         ref={placeholderRef}
         className={cn(styles.placeholder, isDetached && styles.visible, isNearSnap && styles.snapActive)}
-        aria-hidden
+        aria-hidden={isDocked}
         style={placeholderSize ? { width: placeholderSize.w, height: placeholderSize.h } : undefined}
-      />
+      >
+        {isDetached && (
+          <button
+            className={styles.placeholderBtn}
+            onClick={returnToDock}
+            aria-label="Restaurar panel aquí"
+            title="Restaurar panel aquí"
+          >
+            <HomeIcon />
+            <span>Restaurar aquí</span>
+          </button>
+        )}
+      </div>
 
-      {/* Inline cuando docked, portal a body cuando floating/fixed */}
       {isDocked ? dockEl : createPortal(dockEl, document.body)}
     </>
   )

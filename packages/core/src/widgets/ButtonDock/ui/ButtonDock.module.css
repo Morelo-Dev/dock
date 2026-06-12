@@ -1,7 +1,8 @@
-/* ── Placeholder (siempre ocupa el espacio en el flujo del DOM) ─────── */
+/* ── Placeholder (reserva el espacio original cuando el dock está despegado) ── */
 .placeholder {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   border-radius: var(--dock-radius-md);
   border: 2px dashed var(--dock-color-neutral-200);
   background: var(--dock-color-neutral-50);
@@ -16,6 +17,7 @@
 
 .placeholder.visible {
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* Snap-to-home feedback — el placeholder "llama" al dock */
@@ -31,6 +33,29 @@
   50%       { box-shadow: 0 0 0 8px color-mix(in srgb, var(--dock-color-primary-500) 8%, transparent); }
 }
 
+/* Botón dentro del placeholder para restaurar el dock */
+.placeholderBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  font-size: var(--dock-font-size-xs);
+  font-family: var(--dock-font-family);
+  font-weight: 500;
+  color: var(--dock-color-neutral-400);
+  background: transparent;
+  border: none;
+  border-radius: var(--dock-radius-sm);
+  cursor: pointer;
+  transition: color var(--dock-transition-fast), background-color var(--dock-transition-fast);
+  white-space: nowrap;
+}
+
+.placeholderBtn:hover {
+  color: var(--dock-color-primary-600);
+  background-color: color-mix(in srgb, var(--dock-color-primary-500) 10%, transparent);
+}
+
 /* ── Dock root ───────────────────────────────────────────────────────── */
 .root {
   display: inline-flex;
@@ -43,20 +68,21 @@
   box-shadow: var(--dock-shadow-md);
   font-family: var(--dock-font-family);
   user-select: none;
-  /* Prevent layout shifts when transitioning to portal */
   width: max-content;
 }
 
-/* Despegado del DOM (portal en body) */
 .root.detached {
   box-shadow: var(--dock-shadow-float);
 }
 
-/* Arrastrando — cursor y sombra de elevación */
 .root.dragging {
   box-shadow: 0 24px 32px -8px rgb(0 0 0 / 0.2), 0 8px 12px -4px rgb(0 0 0 / 0.12);
   cursor: grabbing !important;
-  transition: box-shadow var(--dock-transition-fast);
+}
+
+.root.snapping {
+  box-shadow: 0 0 0 3px var(--dock-color-primary-400), 0 16px 24px -6px rgb(0 0 0 / 0.18);
+  border-color: var(--dock-color-primary-400);
 }
 
 /* ── Handle ─────────────────────────────────────────────────────────── */
@@ -92,14 +118,8 @@
   flex-shrink: 0;
 }
 
-/* Arrastrando cerca del home — el dock mismo da feedback de "puede volver" */
-.root.snapping {
-  box-shadow: 0 0 0 3px var(--dock-color-primary-400), 0 16px 24px -6px rgb(0 0 0 / 0.18);
-  border-color: var(--dock-color-primary-400);
-}
-
-/* ── Home button (volver al origen) ─────────────────────────────────── */
-.homeBtn {
+/* ── Icon buttons (home + pin) ──────────────────────────────────────── */
+.iconBtn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,13 +136,33 @@
   touch-action: none;
 }
 
+.iconBtn:hover {
+  background-color: var(--dock-color-neutral-100);
+  color: var(--dock-color-neutral-700);
+}
+
+.iconBtn:active {
+  background-color: var(--dock-color-neutral-200);
+}
+
+/* Pin button gets a primary tint when active (fixed mode) */
+.pinBtn {
+  color: var(--dock-color-primary-500);
+}
+
+.pinBtn:hover {
+  background-color: color-mix(in srgb, var(--dock-color-primary-500) 12%, transparent);
+  color: var(--dock-color-primary-700);
+}
+
+/* Home button keeps neutral style — override the generic pinBtn if both classes apply */
+.homeBtn {
+  color: var(--dock-color-neutral-400);
+}
+
 .homeBtn:hover {
   background-color: color-mix(in srgb, var(--dock-color-primary-500) 12%, transparent);
   color: var(--dock-color-primary-600);
-}
-
-.homeBtn:active {
-  background-color: color-mix(in srgb, var(--dock-color-primary-500) 22%, transparent);
 }
 
 /* ── Mode indicator (dev helper) ────────────────────────────────────── */

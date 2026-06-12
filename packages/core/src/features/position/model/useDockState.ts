@@ -5,6 +5,7 @@ type Action =
   | { type: 'START_DRAG'; position: Position }
   | { type: 'COMMIT'; position: Position; mode: DockMode }
   | { type: 'RETURN_TO_DOCK' }
+  | { type: 'TOGGLE_MODE' }
 
 function reducer(state: DockState, action: Action): DockState {
   switch (action.type) {
@@ -14,6 +15,10 @@ function reducer(state: DockState, action: Action): DockState {
       return { mode: action.mode, position: action.position }
     case 'RETURN_TO_DOCK':
       return { mode: 'docked', position: null }
+    case 'TOGGLE_MODE':
+      if (state.mode === 'floating') return { ...state, mode: 'fixed' }
+      if (state.mode === 'fixed') return { ...state, mode: 'floating' }
+      return state
     default:
       return state
   }
@@ -36,5 +41,9 @@ export function useDockState() {
     dispatch({ type: 'RETURN_TO_DOCK' })
   }, [])
 
-  return { state, startDrag, commit, returnToDock }
+  const toggleMode = useCallback(() => {
+    dispatch({ type: 'TOGGLE_MODE' })
+  }, [])
+
+  return { state, startDrag, commit, returnToDock, toggleMode }
 }

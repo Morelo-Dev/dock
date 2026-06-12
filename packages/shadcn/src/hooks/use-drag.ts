@@ -12,12 +12,10 @@ type UseDragOptions = {
 }
 
 const DRAG_THRESHOLD_PX = 6
-const DOUBLE_TAP_MS = 320
 const SNAP_PADDING_PX = 48
 
 export function useDrag({ rootRef, placeholderRef, onDragStart, onDragEnd, onReturnToDock, onSnapChange }: UseDragOptions) {
   const drag = useRef<{ offsetX: number; offsetY: number; startClientX: number; startClientY: number } | null>(null)
-  const lastTapTime = useRef(0)
   const isDragging = useRef(false)
   const isNearSnap = useRef(false)
 
@@ -71,6 +69,7 @@ export function useDrag({ rootRef, placeholderRef, onDragStart, onDragEnd, onRet
     }
 
     if (!wasDragging) {
+      // Single tap — restore inline styles applied on pointerdown
       if (rootRef.current) {
         rootRef.current.style.removeProperty('position')
         rootRef.current.style.removeProperty('left')
@@ -78,17 +77,9 @@ export function useDrag({ rootRef, placeholderRef, onDragStart, onDragEnd, onRet
         rootRef.current.style.removeProperty('margin')
         rootRef.current.style.removeProperty('z-index')
       }
-      const now = Date.now()
-      if (now - lastTapTime.current < DOUBLE_TAP_MS) {
-        lastTapTime.current = 0
-        onReturnRef.current()
-      } else {
-        lastTapTime.current = now
-      }
       return
     }
 
-    // Dropped over home zone → snap back
     if (placeholderRef?.current) {
       const pr = placeholderRef.current.getBoundingClientRect()
       const vx = e.clientX - offsetX

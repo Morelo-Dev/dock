@@ -19,7 +19,6 @@ type UseDragOptions = {
 }
 
 const DRAG_THRESHOLD_PX = 6
-const DOUBLE_TAP_MS = 320
 const SNAP_PADDING_PX = 48
 
 export function useDrag({
@@ -31,7 +30,6 @@ export function useDrag({
   onSnapChange,
 }: UseDragOptions) {
   const drag = useRef<DragState | null>(null)
-  const lastTapTime = useRef(0)
   const isDragging = useRef(false)
   const isNearSnap = useRef(false)
 
@@ -93,7 +91,7 @@ export function useDrag({
     }
 
     if (!wasDragging) {
-      // It was a tap — restore any style changes
+      // Single tap — restore any inline styles applied on pointerdown
       if (rootRef.current) {
         rootRef.current.style.removeProperty('position')
         rootRef.current.style.removeProperty('left')
@@ -101,34 +99,28 @@ export function useDrag({
         rootRef.current.style.removeProperty('margin')
         rootRef.current.style.removeProperty('z-index')
       }
-      // Double-tap → return to dock
-      const now = Date.now()
-      if (now - lastTapTime.current < DOUBLE_TAP_MS) {
-        lastTapTime.current = 0
-        onReturnRef.current()
-      } else {
-        lastTapTime.current = now
-      }
       return
     }
 
-    // Dropped over the home zone → snap back
+    // Dropped over home zone → snap back
     if (placeholderRef?.current) {
       const pr = placeholderRef.current.getBoundingClientRect()
       const vx = e.clientX - offsetX
       const vy = e.clientY - offsetY
+      const w = rootRef.current?.offsetWidth ?? 0
+      const h = rootRef.current?.offsetHeight ?? 0
       const overHome =
-        vx + (rootRef.current?.offsetWidth ?? 0) / 2 >= pr.left - SNAP_PADDING_PX &&
-        vx + (rootRef.current?.offsetWidth ?? 0) / 2 <= pr.right + SNAP_PADDING_PX &&
-        vy + (rootRef.current?.offsetHeight ?? 0) / 2 >= pr.top - SNAP_PADDING_PX &&
-        vy + (rootRef.current?.offsetHeight ?? 0) / 2 <= pr.bottom + SNAP_PADDING_PX
+        vx + w / 2 >= pr.left - SNAP_PADDING_PX &&
+        vx + w / 2 <= pr.right + SNAP_PADDING_PX &&
+        vy + h / 2 >= pr.top - SNAP_PADDING_PX &&
+        vy + h / 2 <= pr.bottom + SNAP_PADDING_PX
       if (overHome) {
         onReturnRef.current()
         return
       }
     }
 
-    // Actual drag — commit final position
+    // Commit final position
     const vx = e.clientX - offsetX
     const vy = e.clientY - offsetY
     const nearEdge =
@@ -151,7 +143,6 @@ export function useDrag({
       }
       isDragging.current = false
 
-      // Prepare for potential drag (snap to fixed so it moves freely)
       rootRef.current.style.position = 'fixed'
       rootRef.current.style.left = `${rect.left}px`
       rootRef.current.style.top = `${rect.top}px`

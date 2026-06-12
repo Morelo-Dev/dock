@@ -7,7 +7,52 @@ import { useDockState } from "../hooks/use-dock-state"
 import { useDrag } from "../hooks/use-drag"
 import type { DockMode, Position } from "../hooks/use-dock-state"
 
-// ── DockHandle ────────────────────────────────────────────────────────────────
+// ── Icons ─────────────────────────────────────────────────────────────────────
+
+function DragDotsIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+      <circle cx="5.5" cy="4"  r="1.2" fill="currentColor" />
+      <circle cx="5.5" cy="8"  r="1.2" fill="currentColor" />
+      <circle cx="5.5" cy="12" r="1.2" fill="currentColor" />
+      <circle cx="10.5" cy="4"  r="1.2" fill="currentColor" />
+      <circle cx="10.5" cy="8"  r="1.2" fill="currentColor" />
+      <circle cx="10.5" cy="12" r="1.2" fill="currentColor" />
+    </svg>
+  )
+}
+
+function HomeIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3 12L12 4l9 8" />
+      <path d="M9 21V12h6v9" />
+      <path d="M3 21h18" />
+    </svg>
+  )
+}
+
+function PinIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <line x1="12" y1="17" x2="12" y2="22" />
+      <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z" />
+    </svg>
+  )
+}
+
+function UnpinIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <line x1="2" y1="2" x2="22" y2="22" />
+      <line x1="12" y1="17" x2="12" y2="22" />
+      <path d="M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h12" />
+      <path d="M15 9.34V6h1a2 2 0 0 0 0-4H7.89" />
+    </svg>
+  )
+}
+
+// ── Sub-components ────────────────────────────────────────────────────────────
 
 function DockHandle({ onPointerDown }: { onPointerDown: React.PointerEventHandler<HTMLDivElement> }) {
   return (
@@ -15,61 +60,34 @@ function DockHandle({ onPointerDown }: { onPointerDown: React.PointerEventHandle
       className={cn(
         "flex items-center justify-center w-7 h-7 rounded-sm shrink-0",
         "text-muted-foreground cursor-grab touch-none",
-        "hover:bg-accent hover:text-accent-foreground",
-        "active:cursor-grabbing transition-colors",
+        "hover:bg-accent hover:text-accent-foreground active:cursor-grabbing transition-colors",
       )}
       onPointerDown={onPointerDown}
       role="button"
       tabIndex={0}
-      aria-label="Arrastrar barra · Doble toque para volver al inicio"
+      aria-label="Arrastrar barra"
     >
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-        <circle cx="5.5" cy="4"  r="1.2" fill="currentColor" />
-        <circle cx="5.5" cy="8"  r="1.2" fill="currentColor" />
-        <circle cx="5.5" cy="12" r="1.2" fill="currentColor" />
-        <circle cx="10.5" cy="4"  r="1.2" fill="currentColor" />
-        <circle cx="10.5" cy="8"  r="1.2" fill="currentColor" />
-        <circle cx="10.5" cy="12" r="1.2" fill="currentColor" />
-      </svg>
+      <DragDotsIcon />
     </div>
   )
 }
 
-// ── HomeButton ────────────────────────────────────────────────────────────────
-
-function HomeButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      aria-label="Volver al lugar de origen"
-      title="Volver al lugar de origen"
-      className={cn(
-        "flex items-center justify-center w-7 h-7 rounded-sm shrink-0",
-        "text-muted-foreground cursor-pointer touch-none border-none bg-transparent p-0",
-        "hover:bg-primary/10 hover:text-primary",
-        "active:bg-primary/20 transition-colors",
-      )}
-    >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M3 12L12 4l9 8" />
-        <path d="M9 21V12h6v9" />
-        <path d="M3 21h18" />
-      </svg>
-    </button>
-  )
-}
+const iconBtnBase = cn(
+  "flex items-center justify-center w-7 h-7 rounded-sm shrink-0",
+  "border-none bg-transparent p-0 cursor-pointer touch-none transition-colors",
+)
 
 // ── ButtonDock ────────────────────────────────────────────────────────────────
 
 export interface ButtonDockProps {
   children: React.ReactNode
-  /** Show current mode label — useful during development */
   showMode?: boolean
+  zIndex?: number
   className?: string
 }
 
-export function ButtonDock({ children, showMode = false, className }: ButtonDockProps) {
-  const { state, startDrag, commit, returnToDock } = useDockState()
+export function ButtonDock({ children, showMode = false, zIndex, className }: ButtonDockProps) {
+  const { state, startDrag, commit, returnToDock, toggleMode } = useDockState()
   const rootRef = React.useRef<HTMLDivElement>(null)
   const placeholderRef = React.useRef<HTMLDivElement>(null)
   const [placeholderSize, setPlaceholderSize] = React.useState<{ w: number; h: number } | null>(null)
@@ -78,9 +96,9 @@ export function ButtonDock({ children, showMode = false, className }: ButtonDock
 
   const isDocked = state.mode === "docked"
   const isDragging = state.mode === "dragging"
+  const isFixed = state.mode === "fixed"
   const isDetached = !isDocked
 
-  // Measure once while docked to size the placeholder
   React.useLayoutEffect(() => {
     if (!isDocked) { measuredRef.current = false; return }
     if (measuredRef.current || !rootRef.current) return
@@ -111,23 +129,12 @@ export function ButtonDock({ children, showMode = false, className }: ButtonDock
   function getPositionStyle(): React.CSSProperties {
     if (isDocked) return {}
     if (!state.position) return {}
-    if (isDragging) {
-      return {
-        position: "fixed",
-        left: state.position.x,
-        top: state.position.y,
-        margin: 0,
-        zIndex: 9999,
-      }
-    }
-    return {
-      position: state.mode === "fixed" ? "fixed" : "absolute",
-      left: state.position.x,
-      top: state.position.y,
-      margin: 0,
-      zIndex: 50,
-    }
+    const z = zIndex ?? (isDragging ? 9999 : 50)
+    if (isDragging) return { position: "fixed", left: state.position.x, top: state.position.y, margin: 0, zIndex: z }
+    return { position: isFixed ? "fixed" : "absolute", left: state.position.x, top: state.position.y, margin: 0, zIndex: z }
   }
+
+  const sep = <div className="w-px h-5 bg-border shrink-0" aria-hidden />
 
   const dockEl = (
     <div
@@ -146,12 +153,33 @@ export function ButtonDock({ children, showMode = false, className }: ButtonDock
       )}
     >
       <DockHandle onPointerDown={onPointerDown} />
-      <div className="w-px h-5 bg-border shrink-0" aria-hidden />
+      {sep}
       {children}
-      {isDetached && (
+      {isDetached && !isDragging && (
         <>
-          <div className="w-px h-5 bg-border shrink-0" aria-hidden />
-          <HomeButton onClick={returnToDock} />
+          {sep}
+          {/* Pin / Unpin */}
+          <button
+            className={cn(iconBtnBase,
+              isFixed
+                ? "text-primary hover:bg-primary/10"
+                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            )}
+            onClick={toggleMode}
+            aria-label={isFixed ? "Desfijar — desplazar con el scroll" : "Fijar en pantalla"}
+            title={isFixed ? "Desfijar — desplazar con el scroll" : "Fijar en pantalla"}
+          >
+            {isFixed ? <UnpinIcon /> : <PinIcon />}
+          </button>
+          {/* Return home */}
+          <button
+            className={cn(iconBtnBase, "text-muted-foreground hover:bg-primary/10 hover:text-primary")}
+            onClick={returnToDock}
+            aria-label="Volver al lugar de origen"
+            title="Volver al lugar de origen"
+          >
+            <HomeIcon />
+          </button>
         </>
       )}
       {showMode && (
@@ -164,20 +192,36 @@ export function ButtonDock({ children, showMode = false, className }: ButtonDock
 
   return (
     <>
-      {/* Placeholder reserves the home-zone space when detached */}
+      {/* Placeholder — reserva el espacio y permite restaurar el dock */}
       <div
         ref={placeholderRef}
-        aria-hidden
+        aria-hidden={isDocked}
         className={cn(
-          "inline-flex border-2 border-dashed rounded-lg",
-          "pointer-events-none transition-all duration-150",
-          isDetached ? "opacity-100" : "opacity-0",
+          "inline-flex items-center justify-center border-2 border-dashed rounded-lg",
+          "transition-all duration-150",
+          isDetached ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
           isNearSnap
             ? "border-primary bg-primary/8 shadow-[0_0_0_4px_hsl(var(--primary)/0.15)] animate-pulse"
             : "border-border bg-muted/30",
         )}
         style={placeholderSize ? { width: placeholderSize.w, height: placeholderSize.h } : undefined}
-      />
+      >
+        {isDetached && (
+          <button
+            className={cn(
+              "inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium",
+              "text-muted-foreground bg-transparent border-none cursor-pointer",
+              "hover:text-primary hover:bg-primary/10 transition-colors",
+            )}
+            onClick={returnToDock}
+            aria-label="Restaurar panel aquí"
+            title="Restaurar panel aquí"
+          >
+            <HomeIcon />
+            <span>Restaurar aquí</span>
+          </button>
+        )}
+      </div>
 
       {isDocked ? dockEl : createPortal(dockEl, document.body)}
     </>
