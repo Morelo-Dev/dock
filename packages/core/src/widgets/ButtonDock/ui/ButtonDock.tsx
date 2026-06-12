@@ -64,8 +64,19 @@ export function ButtonDock({ children, showMode = false }: ButtonDockProps) {
   })
 
   function getPositionStyle(): React.CSSProperties {
-    if (isDocked || isDragging) return {}
+    if (isDocked) return {}
     if (!state.position) return {}
+    // Dragging always uses fixed so the element follows the pointer
+    // across the viewport regardless of scroll position.
+    if (isDragging) {
+      return {
+        position: 'fixed',
+        left: state.position.x,
+        top: state.position.y,
+        margin: 0,
+        zIndex: 9999,
+      }
+    }
     return {
       position: state.mode === 'fixed' ? 'fixed' : 'absolute',
       left: state.position.x,

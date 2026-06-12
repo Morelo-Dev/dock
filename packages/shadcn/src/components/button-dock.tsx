@@ -81,7 +81,17 @@ export function ButtonDock({ children, showMode = false, className }: ButtonDock
   })
 
   function getPositionStyle(): React.CSSProperties {
-    if (isDocked || isDragging || !state.position) return {}
+    if (isDocked) return {}
+    if (!state.position) return {}
+    if (isDragging) {
+      return {
+        position: "fixed",
+        left: state.position.x,
+        top: state.position.y,
+        margin: 0,
+        zIndex: 9999,
+      }
+    }
     return {
       position: state.mode === "fixed" ? "fixed" : "absolute",
       left: state.position.x,
