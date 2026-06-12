@@ -3,7 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@dock/buttons": ["../../packages/core/src/index.ts"]
+      "@dock/buttons": ["../../packages/core/src/index.ts"],
+      "@dock/shadcn/*": ["../../packages/shadcn/src/*"],
+      "@/lib/utils": ["./src/lib/utils.ts"]
     }
   },
   "include": ["src"]
