@@ -11,6 +11,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@dock/buttons': resolve(__dirname, '../../packages/core/src/index.ts'),
+      '@dock/shadcn': resolve(__dirname, '../../packages/shadcn/src'),
+      '@/lib/utils': resolve(__dirname, './src/lib/utils.ts'),
     },
   },
 })

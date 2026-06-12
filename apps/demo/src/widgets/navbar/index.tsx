@@ -15,6 +15,9 @@ export function Navbar() {
         <NavLink to="/gradebook" className={({ isActive }) => isActive ? styles.active : ''}>
           Planilla
         </NavLink>
+        <NavLink to="/shadcn" className={({ isActive }) => isActive ? styles.active : ''}>
+          Shadcn
+        </NavLink>
       </nav>
     </header>
   )
