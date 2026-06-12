@@ -8,5 +8,5 @@
       "@/lib/utils": ["./src/lib/utils.ts"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "vite.config.ts"]
 }

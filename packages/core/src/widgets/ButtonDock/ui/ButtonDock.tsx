@@ -70,7 +70,7 @@ export function ButtonDock({ children, showMode = false, zIndex }: ButtonDockPro
     if (measuredRef.current || !rootRef.current) return
     measuredRef.current = true
     setPlaceholderSize({ w: rootRef.current.offsetWidth, h: rootRef.current.offsetHeight })
-  })
+  }, [isDocked])
 
   // ── Post-commit boundary clamp (runs before browser paint) ────────────────
   // useDrag captures dockW at pointerdown (before extra buttons render), so it
