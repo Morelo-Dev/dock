@@ -1,6 +1,6 @@
 {
   "name": "@deandre-dock/buttons",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Innovative floating button group design system for React",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -13,8 +13,12 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
-  "sideEffects": ["**/*.css"],
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "publishConfig": {
     "access": "public"
   },
