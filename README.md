@@ -90,6 +90,7 @@ export function MyPage() {
 
 ### Tema personalizado
 
+{% raw %}
 ```tsx
 <ThemeProvider theme={{
   colors: { primary: '#7c3aed' },
@@ -99,6 +100,7 @@ export function MyPage() {
   <App />
 </ThemeProvider>
 ```
+{% endraw %}
 
 ---
 

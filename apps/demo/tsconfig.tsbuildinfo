@@ -1,0 +1,1 @@
+{"root":["./src/vite-env.d.ts","./src/app/main.tsx","./src/app/routes.tsx","./src/entities/student/model/mockdata.ts","./src/entities/student/model/types.ts","./src/lib/utils.ts","./src/pages/gradebook/index.tsx","./src/pages/home/index.tsx","./src/pages/shadcn/index.tsx","./src/widgets/navbar/index.tsx","./vite.config.ts"],"version":"5.9.3"}

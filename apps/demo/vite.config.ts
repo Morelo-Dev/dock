@@ -4,6 +4,7 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react()],
+  base: process.env['NODE_ENV'] === 'production' ? '/dock/' : '/',
   server: {
     port: process.env['PORT'] ? parseInt(process.env['PORT']) : 5173,
     strictPort: true,
