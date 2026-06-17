@@ -8,3 +8,9 @@
 
 - [x] 2.1 Envolver el bloque de código tsx (líneas 93-101) con `{% raw %}` y `{% endraw %}` en `README.md`
 - [x] 2.2 Confirmar que el bloque se ve correctamente en el preview de GitHub
+
+## 3. Fix estilos CSS en producción
+
+- [x] 3.1 Cambiar `sideEffects: false` a `sideEffects: ["**/*.css"]` en `packages/core/package.json`
+- [x] 3.2 Agregar `publishConfig: { access: "public" }` en `packages/core/package.json`
+- [x] 3.3 Agregar `publishConfig: { access: "public" }` en `packages/shadcn/package.json`

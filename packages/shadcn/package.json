@@ -4,6 +4,9 @@
   "description": "Shadcn/ui registry for @deandre-dock/buttons — ButtonDock and Button components",
   "type": "module",
   "files": ["registry.json", "src"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build:registry": "node scripts/build-registry.mjs"
   },
