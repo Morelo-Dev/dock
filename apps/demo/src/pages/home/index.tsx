@@ -40,7 +40,7 @@ export function HomePage() {
       <section className={styles.demo}>
         <h2 className={styles.sectionTitle}>ButtonDock — pruébalo aquí</h2>
         <p className={styles.hint}>
-          Arrastra el handle <strong>⠿</strong> para mover la barra · Doble clic para volver al inicio
+          Arrastra el handle <strong>⠿</strong> para mover la barra · Usa el botón 🏠 o suéltala en su lugar para volver
         </p>
 
         <div className={styles.dockZone}>

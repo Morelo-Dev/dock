@@ -77,7 +77,7 @@ export function GradebookPage() {
       </div>
 
       <div className={styles.hint}>
-        ☝ Arrastra el handle de la barra de acciones para moverla. Doble clic para volver.
+        ☝ Arrastra el handle de la barra de acciones para moverla. Usa el botón 🏠 o suéltala en su lugar reservado para volver.
       </div>
 
       <div className={styles.tableWrapper}>
