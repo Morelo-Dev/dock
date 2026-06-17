@@ -1,5 +1,6 @@
 {
   "root": true,
+  "ignorePatterns": ["**/*.d.ts", "**/dist/**", "**/node_modules/**"],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "react", "react-hooks"],
   "extends": [
