@@ -11,6 +11,7 @@ export type ButtonDockProps = {
   children: ReactNode
   showMode?: boolean
   zIndex?: number
+  orientation?: 'horizontal' | 'vertical'
 }
 
 const EDGE_MARGIN = 8
@@ -50,7 +51,7 @@ function UnpinIcon() {
   )
 }
 
-export function ButtonDock({ children, showMode = false, zIndex }: ButtonDockProps) {
+export function ButtonDock({ children, showMode = false, zIndex, orientation = 'horizontal' }: ButtonDockProps) {
   const { state, startDrag, commit, returnToDock } = useDockState()
   const rootRef        = useRef<HTMLDivElement>(null)
   const placeholderRef = useRef<HTMLDivElement>(null)
@@ -153,6 +154,7 @@ export function ButtonDock({ children, showMode = false, zIndex }: ButtonDockPro
       style={getPositionStyle()}
       className={cn(
         styles.root,
+        orientation === 'vertical' && styles.vertical,
         isDetached && styles.detached,
         isDragging && styles.dragging,
         isNearSnap && styles.snapping,

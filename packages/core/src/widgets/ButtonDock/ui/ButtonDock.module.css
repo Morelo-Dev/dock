@@ -85,6 +85,17 @@
   border-color: var(--dock-color-primary-400);
 }
 
+/* ── Vertical orientation ───────────────────────────────────────────── */
+.root.vertical {
+  flex-direction: column;
+  padding: var(--dock-space-3) var(--dock-space-2);
+}
+
+.root.vertical .divider {
+  width: 100%;
+  height: 1px;
+}
+
 /* ── Handle ─────────────────────────────────────────────────────────── */
 .handle {
   display: flex;
