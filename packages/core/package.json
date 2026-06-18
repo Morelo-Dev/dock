@@ -17,6 +17,11 @@
     "dist"
   ],
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deandrenn2/dock.git",
+    "directory": "packages/core"
+  },
   "publishConfig": {
     "access": "public"
   },
