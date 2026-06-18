@@ -1,3 +1,48 @@
+/* ── Tokens base (incluidos aquí para garantizar que el bundle los inyecte) ── */
+:root {
+  --dock-space-1: 0.25rem;
+  --dock-space-2: 0.5rem;
+  --dock-space-3: 0.75rem;
+  --dock-space-4: 1rem;
+  --dock-space-5: 1.25rem;
+  --dock-space-6: 1.5rem;
+  --dock-space-8: 2rem;
+  --dock-radius-sm: 0.25rem;
+  --dock-radius-md: 0.5rem;
+  --dock-radius-lg: 0.75rem;
+  --dock-radius-full: 9999px;
+  --dock-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --dock-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --dock-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --dock-shadow-float: 0 20px 25px -5px rgb(0 0 0 / 0.15), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --dock-color-primary-50: #eff6ff;
+  --dock-color-primary-100: #dbeafe;
+  --dock-color-primary-400: #60a5fa;
+  --dock-color-primary-500: #3b82f6;
+  --dock-color-primary-600: #2563eb;
+  --dock-color-primary-700: #1d4ed8;
+  --dock-color-neutral-0: #ffffff;
+  --dock-color-neutral-50: #f8fafc;
+  --dock-color-neutral-100: #f1f5f9;
+  --dock-color-neutral-200: #e2e8f0;
+  --dock-color-neutral-400: #94a3b8;
+  --dock-color-neutral-500: #64748b;
+  --dock-color-neutral-700: #334155;
+  --dock-color-neutral-900: #0f172a;
+  --dock-color-danger-500: #ef4444;
+  --dock-color-danger-600: #dc2626;
+  --dock-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --dock-font-size-xs: 0.75rem;
+  --dock-font-size-sm: 0.875rem;
+  --dock-font-size-md: 1rem;
+  --dock-font-weight-normal: 400;
+  --dock-font-weight-medium: 500;
+  --dock-font-weight-semibold: 600;
+  --dock-line-height-tight: 1.25;
+  --dock-transition-fast: 150ms ease;
+  --dock-transition-base: 200ms ease;
+}
+
 /* ── Placeholder (reserva el espacio original cuando el dock está despegado) ── */
 .placeholder {
   display: inline-flex;
@@ -69,6 +114,26 @@
   font-family: var(--dock-font-family);
   user-select: none;
   width: max-content;
+  transition:
+    background var(--dock-transition-fast),
+    border-color var(--dock-transition-fast),
+    box-shadow var(--dock-transition-fast),
+    padding var(--dock-transition-fast);
+}
+
+/* Anclado en el header: nativo y transparente */
+.root:not(.detached):not(.dragging) {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* Hint de arrastre al hacer hover estando anclado */
+.root:not(.detached):not(.dragging):hover {
+  background: var(--dock-color-neutral-50);
+  border-color: var(--dock-color-neutral-200);
+  padding: var(--dock-space-1) var(--dock-space-2);
 }
 
 .root.detached {
@@ -104,11 +169,25 @@
   width: 1.75rem;
   height: 1.75rem;
   border-radius: var(--dock-radius-sm);
-  color: var(--dock-color-neutral-400);
+  color: transparent;
   cursor: grab;
   flex-shrink: 0;
-  transition: background-color var(--dock-transition-fast), color var(--dock-transition-fast);
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  transition:
+    opacity var(--dock-transition-fast),
+    width var(--dock-transition-fast),
+    color var(--dock-transition-fast),
+    background-color var(--dock-transition-fast);
   touch-action: none;
+}
+
+/* Mostrar handle solo en hover */
+.root:hover .handle {
+  opacity: 1;
+  width: 1.75rem;
+  color: var(--dock-color-neutral-400);
 }
 
 .handle:hover {
@@ -127,6 +206,12 @@
   height: 1.25rem;
   background: var(--dock-color-neutral-200);
   flex-shrink: 0;
+  opacity: 0;
+  transition: opacity var(--dock-transition-fast);
+}
+
+.root:hover .divider {
+  opacity: 1;
 }
 
 /* ── Icon buttons (home + pin) ──────────────────────────────────────── */
@@ -134,17 +219,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
+  width: 0;
   height: 1.75rem;
   border: none;
   border-radius: var(--dock-radius-sm);
   background: transparent;
-  color: var(--dock-color-neutral-400);
+  color: transparent;
   cursor: pointer;
   flex-shrink: 0;
   padding: 0;
-  transition: background-color var(--dock-transition-fast), color var(--dock-transition-fast);
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    width var(--dock-transition-fast),
+    opacity var(--dock-transition-fast),
+    background-color var(--dock-transition-fast),
+    color var(--dock-transition-fast);
   touch-action: none;
+}
+
+/* Solo visibles al hacer hover sobre el dock */
+.root:hover .iconBtn {
+  width: 1.75rem;
+  opacity: 1;
+  color: var(--dock-color-neutral-400);
+}
+
+/* El divider extra también se colapsa cuando los iconBtns están ocultos */
+.root:not(:hover) .divider:last-of-type {
+  width: 0;
+  opacity: 0;
 }
 
 .iconBtn:hover {

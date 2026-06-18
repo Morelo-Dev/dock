@@ -25,4 +25,3 @@ export function useDockState() {
     }, []);
     return { state, startDrag, commit, returnToDock };
 }
-//# sourceMappingURL=useDockState.js.map

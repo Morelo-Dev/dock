@@ -65,7 +65,6 @@ export function ButtonDock({ children, showMode = false, zIndex, orientation = '
   const isFixed    = state.mode === 'fixed'
   const isDetached = !isDocked
 
-  // ── Measure placeholder once while docked ──────────────────────────────────
   useLayoutEffect(() => {
     if (!isDocked) { measuredRef.current = false; return }
     if (measuredRef.current || !rootRef.current) return
@@ -73,9 +72,6 @@ export function ButtonDock({ children, showMode = false, zIndex, orientation = '
     setPlaceholderSize({ w: rootRef.current.offsetWidth, h: rootRef.current.offsetHeight })
   }, [isDocked])
 
-  // ── Post-commit boundary clamp (runs before browser paint) ────────────────
-  // useDrag captures dockW at pointerdown (before extra buttons render), so it
-  // may undercount. Here we re-check with the real rendered size and fix it.
   useLayoutEffect(() => {
     if (isDragging || isDocked || !state.position || !rootRef.current) return
     const { width: w, height: h } = rootRef.current.getBoundingClientRect()
