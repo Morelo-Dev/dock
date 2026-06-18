@@ -1,5 +1,11 @@
 # @deandre-dock/buttons-shadcn
 
+## 1.0.2
+
+### Patch Changes
+
+- 4b7579e: Add MIT license field, npm keywords, homepage, and rewrite READMEs in English for better npm discoverability
+
 ## 1.0.1
 
 ### Patch Changes
