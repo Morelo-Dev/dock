@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh api *)",
+      "Bash(python -c \"import sys,json,base64; d=json.load\\(sys.stdin\\); print\\(base64.b64decode\\(d['content']\\).decode\\(\\)\\)\")",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(node scripts/build-registry.mjs)",
+      "Bash(node -e \"const r=JSON.parse\\(require\\('fs'\\).readFileSync\\('dist/registry.json','utf-8'\\)\\); r.items.forEach\\(i => { console.log\\(i.name\\); i.files.forEach\\(f => console.log\\('  ', f.path, f.content ? '✓ content \\('+ f.content.length +' chars\\)' : '✗ no content'\\)\\); }\\);\")"
+    ]
+  }
+}

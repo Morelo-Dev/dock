@@ -4,14 +4,15 @@
   "description": "Shadcn/ui registry for @deandre-dock/buttons — ButtonDock and Button components",
   "type": "module",
   "files": [
-    "registry.json",
+    "dist",
     "src"
   ],
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build:registry": "node scripts/build-registry.mjs"
+    "build:registry": "node scripts/build-registry.mjs",
+    "prepublishOnly": "node scripts/build-registry.mjs"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

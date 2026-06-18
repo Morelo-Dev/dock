@@ -5,7 +5,7 @@ Instala `ButtonDock` directamente en tu proyecto Shadcn con el CLI oficial.
 ## Instalación
 
 ```bash
-npx shadcn add https://dock-buttons.dev/registry.json/button-dock
+npx shadcn@latest add https://cdn.jsdelivr.net/npm/@deandre-dock/buttons-shadcn@latest/dist/registry.json
 ```
 
 Esto copia en tu proyecto:
