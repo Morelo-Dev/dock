@@ -1,5 +1,11 @@
 # @deandre-dock/buttons-shadcn
 
+## 1.0.1
+
+### Patch Changes
+
+- 4c5a01d: bugfix styles buttons core
+
 ## 1.0.0
 
 ### Major Changes
