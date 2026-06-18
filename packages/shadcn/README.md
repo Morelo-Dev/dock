@@ -1,19 +1,33 @@
-# @deandre-dock/buttons — Shadcn/ui Registry
+# @deandre-dock/buttons-shadcn
 
-Instala `ButtonDock` directamente en tu proyecto Shadcn con el CLI oficial.
+**Shadcn/ui registry for `ButtonDock`** — the draggable floating action bar that keeps buttons within reach on long pages.
 
-## Instalación
+[![npm version](https://img.shields.io/npm/v/@deandre-dock/buttons-shadcn)](https://www.npmjs.com/package/@deandre-dock/buttons-shadcn)
+[![license](https://img.shields.io/npm/l/@deandre-dock/buttons-shadcn)](https://github.com/deandrenn2/dock/blob/main/LICENSE)
+
+This is a [shadcn/ui registry](https://ui.shadcn.com/docs/registry) package. Installing it **copies the component source directly into your project** — no runtime npm dependency, full ownership of the code.
+
+---
+
+## Install
 
 ```bash
 npx shadcn@latest add https://cdn.jsdelivr.net/npm/@deandre-dock/buttons-shadcn@latest/dist/registry.json
 ```
 
-Esto copia en tu proyecto:
-- `components/ui/button-dock.tsx` — el componente
-- `hooks/use-dock-state.ts` — máquina de estados
-- `hooks/use-drag.ts` — lógica de arrastre
+This copies into your project:
 
-## Uso básico
+| File | Description |
+|------|-------------|
+| `components/ui/button-dock.tsx` | Main component |
+| `hooks/use-dock-state.ts` | State machine (docked / floating / fixed) |
+| `hooks/use-drag.ts` | Pointer event drag logic |
+
+Uses your existing Shadcn CSS variables (`--background`, `--border`, `--muted`, etc.). No `ThemeProvider` needed.
+
+---
+
+## Usage
 
 ```tsx
 import { Button } from "@/components/ui/button"
@@ -23,38 +37,51 @@ export function MyPage() {
   return (
     <div>
       <ButtonDock>
-        <Button>Guardar</Button>
-        <Button variant="outline">Exportar</Button>
-        <Button variant="destructive" size="icon">
+        <Button onClick={save}>Save</Button>
+        <Button variant="outline">Export</Button>
+        <Button variant="destructive" size="icon" aria-label="Delete">
           <Trash2 className="h-4 w-4" />
         </Button>
       </ButtonDock>
 
-      {/* tu contenido... */}
+      {/* Your long content */}
     </div>
   )
 }
 ```
 
+---
+
 ## Props
 
 ### `ButtonDock`
 
-| Prop | Tipo | Default | Descripción |
-|---|---|---|---|
-| `children` | `ReactNode` | — | Botones a mostrar |
-| `showMode` | `boolean` | `false` | Muestra badge del modo actual (dev helper) |
-| `className` | `string` | — | Clases Tailwind adicionales |
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | Buttons to render |
+| `showMode` | `boolean` | `false` | Dev badge showing the current dock mode |
+| `className` | `string` | — | Additional Tailwind classes |
 
-## Comportamiento
+---
 
-| Acción | Resultado |
-|---|---|
-| Arrastrar handle `⠿` + soltar en centro | Modo **floating** — se mueve con el scroll |
-| Arrastrar handle `⠿` + soltar en borde | Modo **fixed** — anclado al viewport |
-| Doble toque en handle | Vuelve a la zona original (**docked**) |
+## Behavior
 
-## Diferencias con `@deandre-dock/buttons`
+| Action | Result |
+|--------|--------|
+| Drag handle `⠿`, release in center | **floating** — moves with page scroll |
+| Drag handle `⠿`, release near edge | **fixed** — pinned to viewport |
+| Double-tap handle | **docked** — returns to original position |
 
-Esta versión usa los tokens CSS de Shadcn (`--background`, `--border`, `--muted`, etc.)
-en lugar de los tokens propios de la librería. No requiere `ThemeProvider`.
+---
+
+## Not Using Shadcn?
+
+Use [`@deandre-dock/buttons`](https://www.npmjs.com/package/@deandre-dock/buttons) — the standalone version with its own `ThemeProvider`.
+
+## Live Demo
+
+[deandrenn2.github.io/dock](https://deandrenn2.github.io/dock/)
+
+## License
+
+MIT © [dock-buttons contributors](https://github.com/deandrenn2/dock/graphs/contributors)

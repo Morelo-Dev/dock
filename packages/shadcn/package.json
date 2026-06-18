@@ -1,7 +1,20 @@
 {
   "name": "@deandre-dock/buttons-shadcn",
   "version": "1.0.1",
-  "description": "Shadcn/ui registry for @deandre-dock/buttons — ButtonDock and Button components",
+  "description": "Shadcn/ui registry for ButtonDock — draggable floating action bar using your existing CSS variables",
+  "keywords": [
+    "shadcn",
+    "shadcn-ui",
+    "registry",
+    "react",
+    "floating",
+    "draggable",
+    "button-group",
+    "toolbar",
+    "button-dock"
+  ],
+  "homepage": "https://deandrenn2.github.io/dock/",
+  "license": "MIT",
   "type": "module",
   "files": [
     "dist",

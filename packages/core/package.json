@@ -1,7 +1,22 @@
 {
   "name": "@deandre-dock/buttons",
   "version": "1.0.1",
-  "description": "Innovative floating button group design system for React",
+  "description": "Draggable floating action bar for React — keeps buttons within reach on long pages",
+  "keywords": [
+    "react",
+    "floating",
+    "draggable",
+    "button-group",
+    "toolbar",
+    "action-bar",
+    "dockable",
+    "floating-action-button",
+    "ui-component",
+    "button-dock",
+    "react-component"
+  ],
+  "homepage": "https://deandrenn2.github.io/dock/",
+  "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

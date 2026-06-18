@@ -1,58 +1,56 @@
 # @deandre-dock/buttons
 
-> Un ButtonGroup flotante e inteligente para React.
+**A draggable floating action bar for React.** Keeps contextual buttons within reach no matter how far the user has scrolled.
 
 [![npm version](https://img.shields.io/npm/v/@deandre-dock/buttons)](https://www.npmjs.com/package/@deandre-dock/buttons)
 [![license](https://img.shields.io/npm/l/@deandre-dock/buttons)](https://github.com/deandrenn2/dock/blob/main/LICENSE)
+[![npm downloads](https://img.shields.io/npm/dm/@deandre-dock/buttons)](https://www.npmjs.com/package/@deandre-dock/buttons)
 
 ---
 
-## ¿Qué es?
+## The Problem
 
-`@deandre-dock/buttons` resuelve un problema real: en interfaces densas (tablas, formularios largos, editores), las acciones contextuales quedan lejos de donde el usuario está trabajando.
+In data-heavy interfaces — tables, long forms, dashboards — action buttons live at the top of the page. Users scroll down, lose context, and have to scroll back up just to save or act. **That's friction you can eliminate.**
 
-**ButtonDock** es un contenedor de botones que el usuario puede mover libremente:
+## The Solution
+
+`ButtonDock` is a floating container users drag to wherever they're working. It auto-snaps to viewport edges and returns home on double-tap.
 
 ```
-┌──────────────────────────────────────┐
-│  [⠿]  [ Generar ]  [ 💾 Guardar ]  [🗑] │  ← arrástralo a donde lo necesites
-└──────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│  ⠿  [ Save ]  [ Export ]  [ ⚡ Run ]   │  ← drag it anywhere
+└─────────────────────────────────────────┘
 ```
-
-| Modo | Comportamiento |
-|---|---|
-| **docked** | En su zona original, flujo normal del DOM |
-| **floating** | Libre, se desplaza con el scroll de la página |
-| **fixed** | Anclado al viewport — el scroll no lo mueve |
-
-**Interacción con el handle `⠿`:**
-- Arrastrar → lo ubica donde lo sueltes
-- Soltar cerca de un borde → modo `fixed`
-- Soltar en el centro → modo `floating`
-- Doble toque → regresa a la zona original
 
 ---
 
-## Instalación
+## Features
+
+- **4 dock states** — `docked` → `dragging` → `floating` → `fixed`
+- **Auto-snap to edges** — releasing near the viewport border switches to `fixed` mode
+- **Double-tap to return** — snaps back to the original DOM position
+- **Fully themeable** — CSS custom properties via `ThemeProvider`
+- **No stylesheet import** — CSS is auto-injected when the package is loaded
+- **Shadcn/ui variant** — [`@deandre-dock/buttons-shadcn`](https://www.npmjs.com/package/@deandre-dock/buttons-shadcn) uses your existing CSS variables
+
+---
+
+## Install
 
 ```bash
-pnpm add @deandre-dock/buttons
-# o
 npm install @deandre-dock/buttons
-# o
-yarn add @deandre-dock/buttons
+# pnpm add @deandre-dock/buttons
+# yarn add @deandre-dock/buttons
 ```
-
-> **¿Usas Shadcn/ui?** Instala la variante con `npx shadcn@latest add https://cdn.jsdelivr.net/npm/@deandre-dock/buttons-shadcn@latest/dist/registry.json` — usa tus CSS variables existentes sin ThemeProvider.
 
 ---
 
-## Uso rápido
+## Quick Start
 
 ```tsx
 import { ThemeProvider, ButtonDock, Button } from '@deandre-dock/buttons'
 
-// Envuelve tu app con ThemeProvider (una sola vez)
+// Wrap your app once
 export function App() {
   return (
     <ThemeProvider>
@@ -61,33 +59,33 @@ export function App() {
   )
 }
 
-// Usa ButtonDock donde necesites acciones contextuales
+// Drop ButtonDock wherever you need contextual actions
 export function MyPage() {
   return (
     <div>
       <ButtonDock>
-        <Button variant="primary" leftIcon={<SaveIcon />}>
-          Guardar
+        <Button variant="primary" leftIcon={<SaveIcon />} onClick={save}>
+          Save
         </Button>
-        <Button variant="secondary">
-          Exportar
+        <Button variant="secondary" leftIcon={<ExportIcon />}>
+          Export
         </Button>
-        <Button variant="danger" iconOnly aria-label="Eliminar">
+        <Button variant="danger" iconOnly aria-label="Delete">
           <TrashIcon />
         </Button>
       </ButtonDock>
 
-      {/* Tu contenido largo aquí... */}
+      {/* Your long content */}
     </div>
   )
 }
 ```
 
-### Tema personalizado
+### Custom Theme
 
 ```tsx
 <ThemeProvider theme={{
-  colors: { primary: '#7c3aed' },
+  colors: { primary: '#7c3aed', danger: '#dc2626' },
   radius: 'lg',
   fontFamily: 'Inter, sans-serif',
 }}>
@@ -101,28 +99,48 @@ export function MyPage() {
 
 ### `<ButtonDock>`
 
-| Prop | Tipo | Default | Descripción |
-|---|---|---|---|
-| `children` | `ReactNode` | — | Botones a mostrar |
-| `showMode` | `boolean` | `false` | Badge con el modo actual (útil en desarrollo) |
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | Buttons to display |
+| `showMode` | `boolean` | `false` | Dev badge showing the current dock mode |
 
 ### `<Button>`
 
-| Prop | Tipo | Default | Descripción |
-|---|---|---|---|
-| `variant` | `'primary' \| 'secondary' \| 'ghost' \| 'danger'` | `'primary'` | Estilo visual |
-| `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'` | Tamaño |
-| `loading` | `boolean` | `false` | Estado de carga (spinner) |
-| `leftIcon` | `ReactNode` | — | Ícono a la izquierda del label |
-| `rightIcon` | `ReactNode` | — | Ícono a la derecha del label |
-| `iconOnly` | `boolean` | `false` | Layout cuadrado sin label |
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'primary' \| 'secondary' \| 'ghost' \| 'danger'` | `'primary'` | Visual style |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'` | Size |
+| `loading` | `boolean` | `false` | Show loading spinner |
+| `leftIcon` | `ReactNode` | — | Icon before label |
+| `rightIcon` | `ReactNode` | — | Icon after label |
+| `iconOnly` | `boolean` | `false` | Square icon-only layout |
+
+### Dock States
+
+| State | Behavior |
+|-------|----------|
+| `docked` | Original DOM position — participates in normal layout |
+| `floating` | Absolutely positioned — follows page scroll |
+| `fixed` | Pinned to viewport — scroll doesn't move it |
 
 ---
 
-## Demo
+## Using Shadcn/ui?
+
+Install the registry variant — it uses your existing `--background`, `--border`, and `--muted` CSS variables. No `ThemeProvider` needed.
+
+```bash
+npx shadcn@latest add https://cdn.jsdelivr.net/npm/@deandre-dock/buttons-shadcn@latest/dist/registry.json
+```
+
+See [`@deandre-dock/buttons-shadcn`](https://www.npmjs.com/package/@deandre-dock/buttons-shadcn).
+
+---
+
+## Live Demo
 
 [deandrenn2.github.io/dock](https://deandrenn2.github.io/dock/)
 
-## Licencia
+## License
 
-MIT © dock-buttons contributors
+MIT © [dock-buttons contributors](https://github.com/deandrenn2/dock/graphs/contributors)
