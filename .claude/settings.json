@@ -7,7 +7,8 @@
       "Bash(node scripts/build-registry.mjs)",
       "Bash(node -e \"const r=JSON.parse\\(require\\('fs'\\).readFileSync\\('dist/registry.json','utf-8'\\)\\); r.items.forEach\\(i => { console.log\\(i.name\\); i.files.forEach\\(f => console.log\\('  ', f.path, f.content ? '✓ content \\('+ f.content.length +' chars\\)' : '✗ no content'\\)\\); }\\);\")",
       "Bash(pnpm add *)",
-      "Bash(npm view *)"
+      "Bash(npm view *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
